@@ -1,0 +1,15 @@
+{
+  "workflow_state": "WAIT",
+  "project": "",
+  "contract_path": "",
+  "iteration": 0,
+  "reference_risk": "none",
+  "subagent_results": {},
+  "circuit_breaker": {
+    "inner_loop": 0,
+    "outer_loop": 0,
+    "debug_attempts": 0,
+    "review_attempts": 0
+  },
+  "last_updated": ""
+}

@@ -1,0 +1,11 @@
+# Maximum compiler warnings for GCC/Clang/MSVC
+function(set_project_warnings target)
+  if(MSVC)
+    target_compile_options(${target} PRIVATE /W4 /permissive- /w14242 /w14254 /w14263 /w14287)
+  else()
+    target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic -Wshadow -Wnon-virtual-dtor)
+    target_compile_options(${target} PRIVATE -Wold-style-cast -Wcast-align -Woverloaded-virtual)
+    target_compile_options(${target} PRIVATE -Wconversion -Wsign-conversion -Wnull-dereference)
+    target_compile_options(${target} PRIVATE -Wformat=2 -Wmisleading-indentation -Wduplicated-cond)
+  endif()
+endfunction()
