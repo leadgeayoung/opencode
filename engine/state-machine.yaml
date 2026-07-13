@@ -1,0 +1,204 @@
+# Builder Engine State Machine Configuration
+# Single source of truth for transitions, counters, and agent-state mapping.
+
+transitions:
+  - from: CLARIFY
+    status: confirm
+    to: RESEARCH
+    resets: [clarify_attempts]
+
+  - from: CLARIFY
+    status: reject
+    to: WAIT
+    resets: [clarify_attempts]
+
+  - from: RESEARCH
+    status: ok
+    to: DESIGN
+    resets: []
+
+  - from: RESEARCH
+    status: partial
+    to: WAIT
+    resets: []
+
+  - from: RESEARCH
+    status: conflict
+    to: WAIT
+    resets: []
+
+  - from: RESEARCH
+    status: fail
+    to: WAIT
+    resets: []
+
+  - from: DESIGN
+    status: ok
+    to: BUILD
+    resets: []
+
+  - from: DESIGN
+    status: fail
+    to: WAIT
+    resets: []
+
+  - from: BUILD
+    status: ok
+    to: POLISH
+    resets: [debug_attempts]
+
+  - from: BUILD
+    status: fail
+    to: WAIT
+    resets: []
+
+  - from: POLISH
+    status: approved
+    to: DELIVER
+    resets: [review_attempts]
+
+  - from: POLISH
+    status: changes_requested
+    to: BUILD
+    resets: [debug_attempts]
+    increments: [outer_loop]
+
+  - from: POLISH
+    status: fail
+    to: WAIT
+    resets: []
+
+  - from: DELIVER
+    status: ok
+    to: LEARN
+    resets: [outer_loop]
+
+  - from: DELIVER
+    status: fail
+    to: WAIT
+    resets: []
+
+  - from: LEARN
+    status: ok
+    to: DONE
+    resets: []
+
+  - from: LEARN
+    status: fail
+    to: DONE
+    resets: []
+
+  - from: WAIT
+    status: bug
+    to: BUILD
+    resets: []
+
+  - from: WAIT
+    status: feature
+    to: CLARIFY
+    resets: []
+
+  - from: WAIT
+    status: optimization
+    to: CLARIFY
+    resets: []
+
+  - from: WAIT
+    status: question
+    to: WAIT
+    resets: []
+
+  - from: WAIT
+    status: other
+    to: WAIT
+    resets: []
+
+  - from: WAIT
+    status: satisfied
+    to: DONE
+    resets: [total_system_retries]
+
+  - from: DONE
+    status: new_message
+    to: CLARIFY
+    resets: []
+
+  - from: DONE
+    status: bug
+    to: BUILD
+    resets: []
+
+  - from: DONE
+    status: feature
+    to: CLARIFY
+    resets: []
+
+  - from: DONE
+    status: optimization
+    to: CLARIFY
+    resets: []
+
+  - from: DONE
+    status: question
+    to: WAIT
+    resets: []
+
+  - from: DONE
+    status: other
+    to: WAIT
+    resets: []
+
+  - from: DONE
+    status: satisfied
+    to: DONE
+    resets: []
+
+counters:
+  - name: clarify_attempts
+    max: 3
+    scope: local
+    reset_on: DONE
+
+  - name: debug_attempts
+    max: 3
+    scope: local
+    entry_reset: BUILD
+
+  - name: review_attempts
+    max: 3
+    scope: local
+    entry_reset: POLISH
+
+  - name: outer_loop
+    max: 3
+    scope: local
+    reset_on: DONE
+
+  - name: total_system_retries
+    max: 7
+    scope: global
+    reset_on: DONE
+
+agents:
+  planner:
+    states: [CLARIFY]
+  knowledge-manager:
+    states: [RESEARCH]
+  researcher:
+    states: [RESEARCH]
+  reference-miner:
+    states: [RESEARCH]
+  architect:
+    states: [DESIGN]
+  implementer:
+    states: [BUILD, POLISH]
+  tester:
+    states: [BUILD]
+  debugger:
+    states: [BUILD]
+  reviewer:
+    states: [POLISH]
+  documenter:
+    states: [DELIVER]
+  skill-miner:
+    states: [LEARN]

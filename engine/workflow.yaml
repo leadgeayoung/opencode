@@ -1,0 +1,38 @@
+# Builder workflow step sequence.
+# action: engine = tool runs automatically.
+# action: llm    = engine waits for builder (LLM) to return a result.
+
+init:
+  - id: sync_rules
+    action: engine
+    tool: write_file
+
+turn:
+  - id: load_state
+    action: engine
+
+  - id: branch
+    action: engine
+
+  - id: classify_intent
+    action: llm
+    task: classify
+
+  - id: transition
+    action: engine
+
+  - id: dispatch
+    action: llm
+    task: dispatch
+
+  - id: evaluate
+    action: engine
+
+  - id: breaker
+    action: engine
+
+  - id: global_check
+    action: engine
+
+  - id: advance
+    action: engine

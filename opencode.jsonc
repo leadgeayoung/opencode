@@ -1,0 +1,16 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "builder",
+  "permission": {
+    "bash": {
+      "rm *": "deny"
+    },
+    "mcp.builder-engine.*": "allow"
+  },
+  "mcp": {
+    "builder-engine": {
+      "type": "local",
+      "command": ["python", "engine/mcp_server.py"]
+    }
+  }
+}

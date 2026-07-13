@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Builder Workflow State",
+  "type": "object",
+  "required": ["workflow_state", "circuit_breaker"],
+  "properties": {
+    "workflow_state": {
+      "type": "string",
+      "enum": ["CLARIFY", "RESEARCH", "DESIGN", "BUILD", "POLISH", "DELIVER", "LEARN", "WAIT", "DONE"]
+    },
+    "circuit_breaker": {
+      "type": "object",
+      "required": ["debug_attempts", "review_attempts", "outer_loop", "clarify_attempts", "total_system_retries"],
+      "properties": {
+        "outer_loop": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "debug_attempts": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "review_attempts": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "clarify_attempts": { "type": "integer", "minimum": 0, "maximum": 3 },
+        "total_system_retries": { "type": "integer", "minimum": 0, "maximum": 7 }
+      }
+    },
+    "last_updated": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}
